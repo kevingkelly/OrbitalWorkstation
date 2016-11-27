@@ -1,0 +1,35 @@
+<html>
+<head></head>
+<body>
+<canvas id="mycanvas">
+This text will appear if the browser doesn't support HTML5.
+</canvas><br/>
+<small><i>
+Operator Console for Conjunction Workstation
+</i></small>
+</body>
+</html>
+
+<script>
+
+
+console.log ("starting WebGL");
+
+var canvas = document.getElementById ("mycanvas");
+canvas.width = 768;
+canvas.height = 256;
+var gl = canvas.getContext ("webgl");
+
+console.log("webgl");
+
+gl.clearColor (0.3, 0.85, 0.5, 1.0);
+gl.clear (gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+// set some GL states that I want to use for rendering
+gl.cullFace (gl.BACK);
+gl.frontFace (gl.CCW);
+gl.enable (gl.CULL_FACE);
+gl.enable (gl.DEPTH_TEST);
+console.log("exiting");
+</script>
+
+
