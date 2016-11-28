@@ -2,6 +2,9 @@ import math
 import orbitalUtilities as utils
 import Earth
 
+from math import cos
+from math import sin
+
 class Projectile:
     
     count = 0
@@ -24,7 +27,7 @@ class Projectile:
         self.objRightAscension = objRightAscension*utils.DEG2RAD
         self.objEccentricity = 0.0 # just handle circular orbits for now
         self.objArgumentofPerigee = 0.0 # just circular orbits
-        self.objMeanAnomaly = objMeanAnomaly*DEG2RAD
+        self.objMeanAnomaly = objMeanAnomaly*utils.DEG2RAD
         self.objTrueAnomaly = objTrueAnomaly
         self.objSemiMajorAxis = objSemiMajorAxis
         # self.objMeanMotion = objMeanMotion
