@@ -1,18 +1,18 @@
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 from flask import Flask,render_template,jsonify,json,request
-from fabric.api import *
+# from fabric.api import *
 
 application = Flask(__name__)
 
 client = MongoClient('localhost:27017')
 db = client.ProjectileData
 
-print "Initialized"
+print("Initialized")
 
 @application.route("/addProjectile",methods=['POST'])
 def addProjectile():
-    print "Add Projectile"
+    print("Add Projectile")
     try:
         json_data = request.json['info']
         objectName = json_data['objectname']
@@ -26,16 +26,17 @@ def addProjectile():
             })
         return jsonify(status='OK',message='inserted successfully')
 
-    except Exception,e:
+    except Exception as e:
         return jsonify(status='ERROR',message=str(e))
 
 @application.route('/')
 def showProjectileList():
+    print ("Render template: list.html")
     return render_template('list.html')
 
 @application.route('/getProjectile',methods=['POST'])
 def getProjectile():
-    print "Get projectile"
+    print("Get projectile")
     try:
         projectileId = request.json['id']
         projectile = db.Projectiles.find_one({'_id':ObjectId(projectileId)})
@@ -48,12 +49,12 @@ def getProjectile():
                 'id':str(projectile['_id'])
                 }
         return json.dumps(projectileDetail)
-    except Exception, e:
+    except Exception as e:
         return str(e)
 
 @application.route('/updateProjectile',methods=['POST'])
 def updateProjectile():
-    print "Update projectile"
+    print("Update projectile")
     try:
         projectileInfo = request.json['info']
         projectileId = projectileInfo['id']
@@ -65,18 +66,18 @@ def updateProjectile():
 
         db.Projectiles.update_one({'_id':ObjectId(projectileId)},{'$set':{'objectname':objectname,'altitude':altitude,'inclination':inclination,'rightascension':rightascension,'anomaly':anomaly}})
         return jsonify(status='OK',message='updated successfully')
-    except Exception, e:
+    except Exception as e:
         return jsonify(status='ERROR',message=str(e))
 
 @application.route("/getProjectileList",methods=['POST'])
 def getProjectileList():
-    print "Get projectile List"
+    print("Get projectile List")
     try:
         projectiles = db.Projectiles.find()
-        print "Get Projectile List 2"
+        print("Get Projectile List 2")
         projectileList = []
         for projectile in projectiles:
-            print "For loop"
+            print("For loop")
             projectileItem = {
                     'objectname':projectile['objectname'],
                     'altitude':projectile['altitude'],
@@ -87,13 +88,13 @@ def getProjectileList():
                     }
             print (projectileItem)
             projectileList.append(projectileItem)
-    except Exception,e:
+    except Exception as e:
         return str(e)
     return json.dumps(projectileList)
 
 @application.route("/execute",methods=['POST'])
 def execute():
-    print "Execute command"
+    print("Execute command")
     try:
         projectileInfo = request.json['info']
         altitude = projectileInfo['altitude']
@@ -101,29 +102,29 @@ def execute():
         rightascension = projectileInfo['rightascension']
         anomaly = projectileInfo['anomaly']
         isRoot = projectileInfo['isRoot']
-        print "Execute command 2"
+        print("Execute command 2")
         env.host_string = username + '@' + ip
         env.password = password
         resp = ''
-        with settings(warn_only=True):
-            if isRoot:
-                resp = sudo(command)
-            else:
-                resp = run(command)
+#        with settings(warn_only=True):
+#            if isRoot:
+#                resp = sudo(command)
+#            else:
+#                resp = run(command)
 
         return jsonify(status='OK',message=resp)
-    except Exception, e:
-        print 'Error is ' + str(e)
+    except Exception as e:
+        print('Error is ' + str(e))
         return jsonify(status='ERROR',message=str(e))
 
 @application.route("/deleteProjectile",methods=['POST'])
 def deleteProjectile():
-    print "Delete projectile"
+    print("Delete projectile")
     try:
         projectileId = request.json['id']
         db.Projectiles.remove({'_id':ObjectId(projectileId)})
         return jsonify(status='OK',message='deletion successful')
-    except Exception, e:
+    except Exception as e:
         return jsonify(status='ERROR',message=str(e))
 
 if __name__ == "__main__":
